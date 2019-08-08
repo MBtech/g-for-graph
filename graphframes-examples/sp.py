@@ -7,12 +7,13 @@ from pyspark.sql.functions import col, lit, when
 import pyspark
 from graphframes.examples import Graphs
 from graphframes import GraphFrame
+import config
 
 sc = pyspark.SparkContext()
 sqlContext = pyspark.SQLContext(sc)
 inputFile = sys.argv[1]
 # g = Graphs(sqlContext).friends()  # Get example graph
-df = sqlContext.read.format("csv").option("delimiter", "\t").load(inputFile)
+df = sqlContext.read.format("csv").option("delimiter", config.delimiter).load(inputFile)
 # Rename columns to something decent.
 df = df.withColumnRenamed("_c0", "src")\
 .withColumnRenamed("_c1", "dst")\
