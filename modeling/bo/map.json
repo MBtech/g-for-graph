@@ -1,0 +1,4 @@
+{
+  "master": {"number": 1, "type": "m5.xlarge", "master": false, "memory": "14G", "ips": ["13.59.52.118"]},
+  "spark": {"number": 4, "type": "m5.large", "master": true, "memory": "6G", "ips": ["18.191.221.126", "3.16.164.6", "52.14.117.36", "18.221.141.159"]}
+}

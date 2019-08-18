@@ -1,0 +1,38 @@
+{
+    "language"        : "PYTHON",
+    "main-file"       : "cherrypick_single",
+    "experiment-name" : "cherrypick-single",
+    "budget" : 6,
+    "variables": {
+        "VM_TYPE": {
+          "type" : "ENUM",
+          "size" : 1,
+          "options" : ["m5", "c5", "r5"]
+        },
+
+        "CPU_COUNT": {
+            "type": "ENUM",
+            "size": 1,
+            "options": [2, 4, 8]
+        },
+
+        "NUM": {
+            "type": "INT",
+            "size": 1,
+            "min":  1,
+            "max":  8
+        }
+    },
+    "tasks": {
+      "time" : {
+          "type"        : "OBJECTIVE",
+          "likelihood"  : "GAUSSIAN"
+      },
+      "cost" : {
+          "type"        : "CONSTRAINT",
+          "likelihood"  : "NOISELESS"
+      }
+    },
+    "polling-time" : 1
+}
+

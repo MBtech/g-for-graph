@@ -1,0 +1,74 @@
+{
+    "language"        : "PYTHON",
+    "main-file"       : "icherrypick",
+    "experiment-name" : "icherrypick",
+    "budget" : 18,
+    "variables": {
+        "HADOOP-VM_TYPE": {
+          "type" : "ENUM",
+          "size" : 1,
+          "options" : ["m4", "c4", "i3", "r4"]
+        },
+
+        "HADOOP-CPU_COUNT": {
+            "type": "ENUM",
+            "size": 1,
+            "options": [2, 4, 8]
+        },
+
+        "HADOOP-NUM": {
+            "type": "INT",
+            "size": 1,
+            "min":  1,
+            "max":  8
+        },
+        "SPARK-VM_TYPE": {
+          "type" : "ENUM",
+          "size" : 1,
+          "options" : ["m4", "c4", "i3", "r4"]
+        },
+
+        "SPARK-CPU_COUNT": {
+            "type": "ENUM",
+            "size": 1,
+            "options": [2, 4, 8]
+        },
+
+        "SPARK-NUM": {
+            "type": "INT",
+            "size": 1,
+            "min":  1,
+            "max":  8
+        },
+       "CASSANDRA-VM_TYPE": {
+          "type" : "ENUM",
+          "size" : 1,
+          "options" : ["m4", "c4", "i3", "r4"]
+        },
+
+        "CASSANDRA-CPU_COUNT": {
+            "type": "ENUM",
+            "size": 1,
+            "options": [2, 4, 8]
+        },
+
+        "CASSANDRA-NUM": {
+            "type": "INT",
+            "size": 1,
+            "min":  1,
+            "max":  8
+        }
+    },
+    "tasks": {
+      "time" : {
+          "type"        : "OBJECTIVE",
+          "likelihood"  : "GAUSSIAN"
+      },
+      "cost" : {
+          "type"        : "CONSTRAINT",
+          "likelihood"  : "NOISELESS"
+      }
+    },
+    "polling-time" : 1
+}
+
