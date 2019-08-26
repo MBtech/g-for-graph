@@ -3,6 +3,8 @@ import org.apache.spark.graphx._
 import org.apache.spark.storage.StorageLevel
 import org.apache.log4j.{Level, Logger}
 import scala.io.Source
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 object PageRank {
   def main(args: Array[String]) {
@@ -19,7 +21,7 @@ object PageRank {
     // Number of partitions
     val numPartitions = args(1).toInt
 
-    println(s"\n### Loading edge list: ${path}\n")
+    println(s"${DateTimeFormatter.ofPattern("yyyy-MM-dd_HH:mm:ss").format(LocalDateTime.now)} Loading edge list: ${path}\n")
     // Source.fromFile(path).getLines().foreach(println)
 
     val g: Graph[Int, Int] = GraphLoader.edgeListFile(
@@ -29,10 +31,14 @@ object PageRank {
       vertexStorageLevel = StorageLevel.MEMORY_AND_DISK,
       numEdgePartitions = numPartitions
     )
+
+    println(s"${DateTimeFormatter.ofPattern("yyyy-MM-dd_HH:mm:ss").format(LocalDateTime.now)} Graph Loaded. Number of Vertices: ${g.vertices.count()}\n")
+
 //    val gp = g.partitionBy(new DBH, numPartitions)
   //  val gp = g.partitionBy(new HDRF(1.0f, numPartitions), numPartitions)
     val gp = g.partitionBy(PartitionStrategy.fromString("RandomVertexCut"), numPartitions)
 //    val gp = g.partitionBy(new ImblanacedPartitioner,3)
+    println(s"${DateTimeFormatter.ofPattern("yyyy-MM-dd_HH:mm:ss").format(LocalDateTime.now)} Partitioning Done. Number of Vertices: ${gp.vertices.count()}\n")
 
     val ranks = gp.pageRank(0.0001).vertices
 

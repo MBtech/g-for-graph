@@ -1,40 +1,43 @@
 {
     "language"        : "PYTHON",
     "main-file"       : "icherrypick",
-    "experiment-name" : "spearmint-pagerank-big",
+    "experiment-name" : "graphx-pagerank-big",
     "ei": 0.10,
-    "design-size": 6,
-    "budget" : 18,
-    "maxbudget": 30,
+    "design-size": 3,
+    "budget" : 9,
+    "maxbudget": 9,
     "count": 0,
     "variables": {
-        "SPARK-VM_TYPE": {
+        "VM_TYPE": {
           "type" : "ENUM",
           "size" : 1,
-          "options" : ["m5", "c5", "r5"]
+          "options" : ["m5", "c5"]
         },
 
-        "SPARK-CPU_COUNT": {
+        "VM_SIZE": {
             "type": "ENUM",
             "size": 1,
-            "options" : [1, 2]
+            "options" : ["large", "xlarge", "2xlarge"]
         },
 
-        "SPARK-NUM": {
+        "FRAC_PARTITIONS": {
             "type": "INT",
             "size": 1,
             "min":  0,
-            "max":  15
+            "max":  4
+        },
+
+        "NUM": {
+            "type": "INT",
+            "size": 1,
+            "min":  0,
+            "max":  3
         }
     },
     "tasks": {
       "time" : {
           "type"        : "OBJECTIVE",
           "likelihood"  : "GAUSSIAN"
-      },
-      "cost" : {
-          "type"        : "CONSTRAINT",
-          "likelihood"  : "NOISELESS"
       }
     },
     "polling-time" : 60
