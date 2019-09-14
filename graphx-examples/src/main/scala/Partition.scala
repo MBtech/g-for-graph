@@ -5,12 +5,14 @@ import org.apache.log4j.{Level, Logger}
 import scala.io.Source
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import partitioning.CoordinatedPartitionState
+import scala.collection.mutable
 
-object TC {
+object Partition {
   def main(args: Array[String]) {
     // Start Spark.
     println("\n### Starting Spark\n")
-    val sparkConf = new SparkConf().setAppName("Triangle Counting")
+    val sparkConf = new SparkConf().setAppName("PageRank")
     implicit val sc = new SparkContext(sparkConf)
 
     // Suppress unnecessary logging.
@@ -21,7 +23,7 @@ object TC {
     // Number of partitions
     val numPartitions = args(1).toInt
     val strategy = if (args.size >= 3) args(2) else "hash"
-    
+
     println(s"${DateTimeFormatter.ofPattern("yyyy-MM-dd_HH:mm:ss").format(LocalDateTime.now)} Loading edge list: ${path}\n")
     // Source.fromFile(path).getLines().foreach(println)
 
@@ -32,6 +34,8 @@ object TC {
       vertexStorageLevel = StorageLevel.MEMORY_AND_DISK,
       numEdgePartitions = numPartitions
     )
+    // g.edges.saveAsTextFile("file:/home/ubuntu/input")
+    g.edges.take(5).foreach(println)
     println(s"${DateTimeFormatter.ofPattern("yyyy-MM-dd_HH:mm:ss").format(LocalDateTime.now)} Graph Loaded. Number of Vertices: ${g.vertices.count()}\n")
 
     // val  state = new CoordinatedPartitionState(numPartitions)
@@ -45,9 +49,11 @@ object TC {
     }
 
     val gp = g.partitionBy(algorithm, numPartitions)
+    // gp.edges.take(5).foreach(println)
 //    val gp = g.partitionBy(new ImblanacedPartitioner,3)
     // gp.edges.saveAsTextFile("file:/home/ubuntu/output")
     println(s"${DateTimeFormatter.ofPattern("yyyy-MM-dd_HH:mm:ss").format(LocalDateTime.now)} Partitioning Done. Number of Vertices: ${gp.vertices.count()}\n")
+    // gp.edges.take(5).foreach(println)
 
     val countRDD = gp.edges.mapPartitionsWithIndex{case (i,rows) => Iterator((i,rows.size))}
     println(s"${DateTimeFormatter.ofPattern("yyyy-MM-dd_HH:mm:ss").format(LocalDateTime.now)} Edge Distribution")
@@ -58,9 +64,19 @@ object TC {
     println(s"${DateTimeFormatter.ofPattern("yyyy-MM-dd_HH:mm:ss").format(LocalDateTime.now)} Vertices Distribution")
     vRDD.collect().foreach(println)
 
-    val triCounts = gp.triangleCount().vertices
+    // println("Vertex Distribution")
+    // val vRDD = gp.edges.mapPartitionsWithIndex{case (i,rows) =>
+    //   var v : mutable.Set[Long] = mutable.Set()
+    //   rows.foreach(e => {
+    //     v.add(e.srcId)
+    //     v.add(e.dstId)
+    //   })
+    //   Iterator((i, v.size))
+    // }
+    // vRDD.collect().foreach(println)
 
-    triCounts.take(10).foreach(println)
+    // gp.edges.saveAsTextFile("s3a://graphanalytics-datasets/output")
+    // gp.edges.take(10).foreach(println)
     // Stop Spark.
     sc.stop()
   }
